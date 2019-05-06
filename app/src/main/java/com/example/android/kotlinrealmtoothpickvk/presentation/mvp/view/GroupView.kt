@@ -6,7 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
 
 @StateStrategyType(value = AddToEndSingleStrategy::class)
-open interface GroupView : MvpView{
+interface GroupView : MvpView{
      fun startLoading()
 
      fun endLoading()

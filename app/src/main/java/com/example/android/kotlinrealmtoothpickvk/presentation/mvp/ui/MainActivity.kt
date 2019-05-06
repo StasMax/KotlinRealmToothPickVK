@@ -20,50 +20,44 @@ import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupVie
 import com.vk.sdk.VKScope
 import com.vk.sdk.VKSdk
 import kotlinx.android.synthetic.main.activity_main.*
-import com.vk.sdk.util.VKUtil
 
 class MainActivity : GroupView, BaseActivity() {
-
- //  lateinit var floatButton: FloatingActionButton
-
 
 
     @InjectPresenter
     lateinit var groupPresenter: GroupPresenter
 
-   lateinit var adapter: GroupAdapterRv
+    lateinit var adapter: GroupAdapterRv
 
- /*   @ProvidePresenter
-    fun providePresenter(): GroupPresenter {
-        return groupPresenter
-    }*/
+    /*   @ProvidePresenter
+       fun providePresenter(): GroupPresenter {
+           return groupPresenter
+       }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-  //      adapter = GroupAdapterRv()
         setupRecyclerView()
         clickButton()
         txtListener()
-        VKSdk.login(this, VKScope.GROUPS)
-      /*  if (isNetworkConnected()) {
+        if (isNetworkConnected()) {
             VKSdk.login(this, VKScope.GROUPS)
-        }*/
+        }
     }
 
     private fun setupRecyclerView() {
-        adapter  = GroupAdapterRv()
-var recyclerView: RecyclerView = findViewById(R.id.recycler_groups)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false) as RecyclerView.LayoutManager?
-        recyclerView.setHasFixedSize(true)
+        adapter = GroupAdapterRv()
+        recycler_groups.adapter = adapter
+        recycler_groups.layoutManager =
+            LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
+        recycler_groups.setHasFixedSize(true)
         favoriteListener(adapter)
     }
 
     private fun txtListener() {
         txt_search.addTextChangedListener(object : TextListenerAdapter() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-         //       adapter.filter(s.toString())
+                adapter.filter(s.toString())
             }
         })
     }
@@ -103,7 +97,10 @@ var recyclerView: RecyclerView = findViewById(R.id.recycler_groups)
         adapter.setupGroups(groupModelList = groupsList)
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        groupPresenter.onInitGroupsDb()
+    }
 
     private fun favoriteListener(groupAdapterRv: GroupAdapterRv) {
         groupAdapterRv.listener = (object : Listener {

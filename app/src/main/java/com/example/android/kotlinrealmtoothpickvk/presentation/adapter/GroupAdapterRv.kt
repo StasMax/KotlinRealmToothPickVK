@@ -47,7 +47,7 @@ class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (viewHolder is ViewHolderGroup) {
             viewHolder.bind(groupModel = groupsModelList[i])
             val checkBox: CheckBox = viewHolder.itemView.findViewById(R.id.isFavorite_checkBox)
-            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkBox.setOnCheckedChangeListener { view, isChecked ->
                 listener.onClick(groupsModelList[i], isChecked)
             }
         }

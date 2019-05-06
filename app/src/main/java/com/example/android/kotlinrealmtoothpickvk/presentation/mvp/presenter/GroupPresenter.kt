@@ -25,7 +25,7 @@ class GroupPresenter : BasePresenter<GroupView>() {
         VKSdk.onActivityResult(requestCode, resultCode, data, object : VKCallback<VKAccessToken> {
             override fun onResult(res: VKAccessToken) {
                 onInitGroupsVk()
-                onInitGroupsDb()
+
             }
 
             override fun onError(error: VKError) {
