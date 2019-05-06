@@ -11,6 +11,8 @@ import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
+import io.reactivex.internal.operators.flowable.FlowableFlatMap.subscribe
+import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 
 @InjectViewState
@@ -22,7 +24,8 @@ class GroupPresenter : BasePresenter<GroupView>() {
     fun loginVk(requestCode: Int, resultCode: Int, data: Intent?) {
         VKSdk.onActivityResult(requestCode, resultCode, data, object : VKCallback<VKAccessToken> {
             override fun onResult(res: VKAccessToken) {
-                onInitDb()
+                onInitGroupsVk()
+                onInitGroupsDb()
             }
 
             override fun onError(error: VKError) {
@@ -31,21 +34,23 @@ class GroupPresenter : BasePresenter<GroupView>() {
         })
     }
 
-    fun onInitDb(){
-        disposeBag(iteractor.putModelsInDb(realm)
-           // .subscribeOn(Schedulers.io())
-           // .observeOn(AndroidSchedulers.mainThread())
-            .subscribe())
+    fun onInitGroupsVk(){
+        disposeBag(iteractor.getAllListGroupsVk()
+            .doOnSubscribe { viewState.startLoading() }
+            .flatMapCompletable { iteractor.putModelsInDb(it, realm) }
+
+        .subscribe())
     }
 
-    fun onInitGroupsVk() {
+    fun onInitGroupsDb() {
         disposeBag(iteractor.getAllGroups(realm)
            // .subscribeOn(Schedulers.io())
           //  .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { onInitGroupsRecycle(it) })
+            .subscribe { onInitGroupsRecycle(it)
+            viewState.endLoading()})
     }
 
-    fun onInitGroupsRecycle(groupModelList: List<ModelGroup>) {
+    private fun onInitGroupsRecycle(groupModelList: List<ModelGroup>) {
         if (groupModelList.isEmpty()) {
             viewState.setupEmptyList()
             viewState.showError(R.string.no_groups_item)
@@ -54,7 +59,7 @@ class GroupPresenter : BasePresenter<GroupView>() {
         }
     }
 
-    internal fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
+    fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
         groupModel.isFavorite = isChecked
         disposeBag(
             iteractor.updeteModelInDb(groupModel, realm)

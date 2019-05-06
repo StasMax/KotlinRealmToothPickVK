@@ -8,15 +8,13 @@ import io.realm.Realm
 
 class LocalDbRepositoryImpl : ILocalDbRepository {
 
-    private var vkRepository: IVkRepository = VkRepositoryImpl()
     private var realmDb: IRealmDb = RealmDbImpl()
 
-    override fun insertAll(realm: Realm): Completable {
+    override fun insertAll(vkModels: List<ModelGroup>, realm: Realm): Completable {
         return Completable.fromAction(Action {
             realmDb.deleteAll(realm)
-            val listModelGroup = vkRepository.getGroupsFromVk()
-            Log.e("EEE", listModelGroup.size.toString())
-            realmDb.insertModels(listModelGroup, realm)
+Log.e("QQQ", vkModels.size.toString())
+            realmDb.insertModels(vkModels, realm)
         })
     }
 

@@ -5,7 +5,7 @@ import io.reactivex.Flowable
 import io.realm.Realm
 
 interface ILocalDbRepository {
-    fun insertAll(realm: Realm): Completable
+    fun insertAll(vkModels: List<ModelGroup>, realm: Realm): Completable
 
     fun update(model: ModelGroup, realm: Realm): Completable
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.OrientationHelper
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,18 +22,16 @@ import com.vk.sdk.VKSdk
 import kotlinx.android.synthetic.main.activity_main.*
 import com.vk.sdk.util.VKUtil
 
-
-
-
-
 class MainActivity : GroupView, BaseActivity() {
 
  //  lateinit var floatButton: FloatingActionButton
 
-    lateinit var adapter: GroupAdapterRv
+
 
     @InjectPresenter
     lateinit var groupPresenter: GroupPresenter
+
+   lateinit var adapter: GroupAdapterRv
 
  /*   @ProvidePresenter
     fun providePresenter(): GroupPresenter {
@@ -41,28 +40,30 @@ class MainActivity : GroupView, BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.example.android.kotlinrealmtoothpickvk.R.layout.activity_main)
+        setContentView(R.layout.activity_main)
+  //      adapter = GroupAdapterRv()
         setupRecyclerView()
         clickButton()
         txtListener()
-
-        if (isNetworkConnected()) {
+        VKSdk.login(this, VKScope.GROUPS)
+      /*  if (isNetworkConnected()) {
             VKSdk.login(this, VKScope.GROUPS)
-        }
+        }*/
     }
 
     private fun setupRecyclerView() {
-        adapter = GroupAdapterRv()
-        recycler_groups.adapter = adapter
-        recycler_groups.layoutManager = LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
-        recycler_groups.setHasFixedSize(true)
+        adapter  = GroupAdapterRv()
+var recyclerView: RecyclerView = findViewById(R.id.recycler_groups)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false) as RecyclerView.LayoutManager?
+        recyclerView.setHasFixedSize(true)
         favoriteListener(adapter)
     }
 
     private fun txtListener() {
         txt_search.addTextChangedListener(object : TextListenerAdapter() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter(s.toString())
+         //       adapter.filter(s.toString())
             }
         })
     }
@@ -102,10 +103,7 @@ class MainActivity : GroupView, BaseActivity() {
         adapter.setupGroups(groupModelList = groupsList)
     }
 
-    override fun onStart() {
-        super.onStart()
-        groupPresenter.onInitGroupsVk()
-    }
+
 
     private fun favoriteListener(groupAdapterRv: GroupAdapterRv) {
         groupAdapterRv.listener = (object : Listener {
