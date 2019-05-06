@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
+import android.util.Log
 import io.reactivex.Flowable
 import io.realm.Realm
 import io.realm.kotlin.createObject
@@ -11,9 +12,10 @@ class RealmDbImpl : IRealmDb {
         realm.beginTransaction()
         val result = realm.where(ModelGroup::class.java).findAll()
         val models: List<ModelGroup> = realm.copyFromRealm(realm.where(ModelGroup::class.java).findAll())
+        Log.e("EEE", models.size.toString())
         realm.commitTransaction()
         //    realm.close()
-        return result.asFlowable()
+        return Flowable.just(models)
        // return Flowable.just(models)
     }
 

@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
+import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.functions.Action
@@ -14,6 +15,7 @@ class LocalDbRepositoryImpl : ILocalDbRepository {
         return Completable.fromAction(Action {
             realmDb.deleteAll(realm)
             val listModelGroup = vkRepository.getGroupsFromVk()
+            Log.e("EEE", listModelGroup.size.toString())
             realmDb.insertModels(listModelGroup, realm)
         })
     }
