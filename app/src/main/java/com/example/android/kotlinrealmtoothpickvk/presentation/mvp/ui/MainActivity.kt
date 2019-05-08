@@ -2,46 +2,53 @@ package com.example.android.kotlinrealmtoothpickvk.presentation.mvp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
+import android.os.PersistableBundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.OrientationHelper
-import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.android.kotlinrealmtoothpickvk.R
 import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.GroupAdapterRv
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.Listener
-import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.TextListenerAdapter
+import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.onTextChange
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter.GroupPresenter
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupView
 import com.vk.sdk.VKScope
 import com.vk.sdk.VKSdk
 import kotlinx.android.synthetic.main.activity_main.*
+import toothpick.Scope
+import toothpick.Toothpick
+import javax.inject.Inject
 
 class MainActivity : GroupView, BaseActivity() {
+    var vkLoad: Boolean = true
+    lateinit var adapter: GroupAdapterRv
 
-
+    @Inject
     @InjectPresenter
     lateinit var groupPresenter: GroupPresenter
 
-    lateinit var adapter: GroupAdapterRv
-
-    /*   @ProvidePresenter
-       fun providePresenter(): GroupPresenter {
-           return groupPresenter
-       }*/
+    @ProvidePresenter
+    fun providePresenter(): GroupPresenter {
+        return groupPresenter
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        savedInstanceState?.let { vkLoad = savedInstanceState.getBoolean("vkLoad") }
+        val scope: Scope = Toothpick.openScope("mainScope")
+        scope.installModules(GroupModule())
+        Toothpick.inject(this, scope)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupRecyclerView()
         clickButton()
         txtListener()
-        if (isNetworkConnected()) {
+        if (isNetworkConnected() && vkLoad) {
             VKSdk.login(this, VKScope.GROUPS)
+            vkLoad = false
         }
     }
 
@@ -55,11 +62,9 @@ class MainActivity : GroupView, BaseActivity() {
     }
 
     private fun txtListener() {
-        txt_search.addTextChangedListener(object : TextListenerAdapter() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter(s.toString())
-            }
-        })
+        txt_search.onTextChange { text, _, _, _ ->
+            adapter.filter(text.toString())
+        }
     }
 
     private fun clickButton() {
@@ -102,11 +107,21 @@ class MainActivity : GroupView, BaseActivity() {
         groupPresenter.onInitGroupsDb()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Toothpick.closeScope("mainScope")
+    }
+
     private fun favoriteListener(groupAdapterRv: GroupAdapterRv) {
         groupAdapterRv.listener = (object : Listener {
             override fun onClick(groupModel: ModelGroup, isChecked: Boolean) {
                 groupPresenter.onSetFavorite(groupModel, isChecked)
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState!!.putBoolean("vkLoad", vkLoad)
     }
 }

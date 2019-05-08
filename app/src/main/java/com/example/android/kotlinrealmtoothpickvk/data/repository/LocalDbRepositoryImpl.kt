@@ -1,48 +1,42 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.functions.Action
-import io.realm.Realm
+import javax.inject.Inject
 
-class LocalDbRepositoryImpl : ILocalDbRepository {
-
-    private var realmDb: IRealmDb = RealmDbImpl()
+class LocalDbRepositoryImpl @Inject constructor(var realmDb: IRealmDb) : ILocalDbRepository {
     private var listDb = arrayListOf<ModelGroup>()
     private var listVk = arrayListOf<ModelGroup>()
 
-    override fun insertAll(vkModels: List<ModelGroup>, realm: Realm): Completable {
-        return Completable.fromAction(Action {
-
-            Log.e("QQQ", vkModels.size.toString())
+    override fun insertAll(vkModels: List<ModelGroup>): Completable {
+        return Completable.fromAction {
             listVk.clear()
             listDb.clear()
             listVk.addAll(vkModels)
-            listDb.addAll(realmDb.getAllList(realm))
+            listDb.addAll(realmDb.getAllList())
 
             for (groupModel in listVk) {
                 if (!listDb.contains(groupModel)) {
-                    realmDb.insert(groupModel, realm)
+                    realmDb.insert(groupModel)
                 }
             }
             for (groupModel in listDb) {
                 if (!listVk.contains(groupModel)) {
-                    realmDb.delete(groupModel, realm)
+                    realmDb.delete(groupModel)
                 }
             }
-        })
+        }
     }
 
-    override fun update(model: ModelGroup, realm: Realm): Completable {
-        return Completable.fromAction(Action { realmDb.updateFavorite(model, realm) })
+    override fun update(model: ModelGroup): Completable {
+        return Completable.fromAction { realmDb.updateFavorite(model) }
     }
 
-    override fun getAllFromLocalDb(realm: Realm): Flowable<List<ModelGroup>> {
-        return realmDb.getAll(realm)
+    override fun getAllFromLocalDb(): Flowable<List<ModelGroup>> {
+        return realmDb.getAll()
     }
 
-    override fun getFavoriteFromLocalDb(realm: Realm): Flowable<List<ModelGroup>> {
-        return realmDb.getFavorite(realm)
+    override fun getFavoriteFromLocalDb(): Flowable<List<ModelGroup>> {
+        return realmDb.getFavorite()
     }
 }

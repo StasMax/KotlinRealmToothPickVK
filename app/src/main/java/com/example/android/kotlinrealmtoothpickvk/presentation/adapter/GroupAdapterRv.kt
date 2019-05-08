@@ -9,7 +9,6 @@ import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
 import java.util.ArrayList
 
 class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private val groupsModelList = ArrayList<ModelGroup>()
     private val sourceList = ArrayList<ModelGroup>()
     lateinit var listener: Listener
@@ -30,7 +29,7 @@ class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun filter(query: String) {
         groupsModelList.clear()
         sourceList.forEach {
-            if (it.name?.contains(query, ignoreCase = false)!!) {
+            if (it.name?.contains(query, ignoreCase = true)!!) {
                 groupsModelList.add(it)
             }
         }
@@ -47,7 +46,7 @@ class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (viewHolder is ViewHolderGroup) {
             viewHolder.bind(groupModel = groupsModelList[i])
             val checkBox: CheckBox = viewHolder.itemView.findViewById(R.id.isFavorite_checkBox)
-            checkBox.setOnCheckedChangeListener { view, isChecked ->
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
                 listener.onClick(groupsModelList[i], isChecked)
             }
         }

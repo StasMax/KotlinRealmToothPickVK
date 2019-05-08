@@ -4,28 +4,23 @@ import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.example.android.kotlinrealmtoothpickvk.R
 import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
-import com.example.android.kotlinrealmtoothpickvk.iteractor.GroupIteractorImpl
 import com.example.android.kotlinrealmtoothpickvk.iteractor.IGroupIteractor
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupView
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
-import io.reactivex.internal.operators.flowable.FlowableFlatMap.subscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import io.realm.Realm
+import javax.inject.Inject
 
 @InjectViewState
-class GroupPresenter : BasePresenter<GroupView>() {
-
-    var iteractor: IGroupIteractor = GroupIteractorImpl()
-    private var realm: Realm = Realm.getDefaultInstance()
+class GroupPresenter @Inject constructor(var iteractor: IGroupIteractor) : BasePresenter<GroupView>() {
 
     fun loginVk(requestCode: Int, resultCode: Int, data: Intent?) {
         VKSdk.onActivityResult(requestCode, resultCode, data, object : VKCallback<VKAccessToken> {
             override fun onResult(res: VKAccessToken) {
                 onInitGroupsVk()
-
             }
 
             override fun onError(error: VKError) {
@@ -34,20 +29,23 @@ class GroupPresenter : BasePresenter<GroupView>() {
         })
     }
 
-    fun onInitGroupsVk(){
+    fun onInitGroupsVk() {
         disposeBag(iteractor.getAllListGroupsVk()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.startLoading() }
-            .flatMapCompletable { iteractor.putModelsInDb(it, realm) }
-
-        .subscribe())
+            .flatMapCompletable { iteractor.putModelsInDb(it) }
+            .subscribe())
     }
 
     fun onInitGroupsDb() {
-        disposeBag(iteractor.getAllGroups(realm)
-           // .subscribeOn(Schedulers.io())
-          //  .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { onInitGroupsRecycle(it)
-            viewState.endLoading()})
+        disposeBag(iteractor.getAllGroups()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                onInitGroupsRecycle(it)
+                viewState.endLoading()
+            })
     }
 
     private fun onInitGroupsRecycle(groupModelList: List<ModelGroup>) {
@@ -62,14 +60,10 @@ class GroupPresenter : BasePresenter<GroupView>() {
     fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
         groupModel.isFavorite = isChecked
         disposeBag(
-            iteractor.updeteModelInDb(groupModel, realm)
-              //  .subscribeOn(Schedulers.newThread())
+            iteractor.updeteModelInDb(groupModel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
     }
 }

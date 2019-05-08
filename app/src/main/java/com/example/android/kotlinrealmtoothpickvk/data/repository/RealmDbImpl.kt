@@ -1,52 +1,66 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
-import android.util.Log
 import io.reactivex.Flowable
 import io.realm.Realm
+import javax.inject.Inject
 
-class RealmDbImpl : IRealmDb {
+class RealmDbImpl @Inject constructor() : IRealmDb {
 
-    override fun getAll(realm: Realm): Flowable<List<ModelGroup>> {
-        val models: List<ModelGroup> = realm.copyFromRealm(realm.where(ModelGroup::class.java).findAll())
-        Log.e("EEE", models.size.toString())
+    lateinit var realmN: Realm
+
+    override fun getAll(): Flowable<List<ModelGroup>> {
+        realmN = Realm.getDefaultInstance()
+        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(ModelGroup::class.java).findAllAsync())
+        realmN.close()
         return Flowable.just(models)
     }
 
-    override fun getAllList(realm: Realm): List<ModelGroup> {
-        val models: List<ModelGroup> = realm.copyFromRealm(realm.where(ModelGroup::class.java).findAll())
-        Log.e("EEE", models.size.toString())
+    override fun getAllList(): List<ModelGroup> {
+        realmN = Realm.getDefaultInstance()
+        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(ModelGroup::class.java).findAllAsync())
+        realmN.close()
         return models
     }
 
-    override fun getFavorite(realm: Realm): Flowable<List<ModelGroup>> {
+    override fun getFavorite(): Flowable<List<ModelGroup>> {
+        realmN = Realm.getDefaultInstance()
         val models: List<ModelGroup> =
-            realm.copyFromRealm(realm.where(ModelGroup::class.java).equalTo("isFavorite", true).findAll())
+            realmN.copyFromRealm(realmN.where(ModelGroup::class.java).equalTo("isFavorite", true).findAllAsync())
+        realmN.close()
         return Flowable.just(models)
     }
 
-    override fun delete(model: ModelGroup, realm: Realm) {
-        realm.executeTransaction {
-            val result = realm.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
+    override fun delete(model: ModelGroup) {
+        realmN = Realm.getDefaultInstance()
+        realmN.executeTransactionAsync {
+            val result = realmN.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
             result!!.deleteFromRealm()
         }
+        realmN.close()
     }
 
-    override fun updateFavorite(model: ModelGroup, realm: Realm) {
-        realm.executeTransaction {
-            val result = realm.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
+    override fun updateFavorite(model: ModelGroup) {
+        realmN = Realm.getDefaultInstance()
+        realmN.executeTransactionAsync {
+            val result = it.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
             result!!.isFavorite = model.isFavorite
         }
+        realmN.close()
     }
 
-    override fun insert(model: ModelGroup, realm: Realm) {
-        realm.beginTransaction()
-        realm.copyToRealm(model)
-        realm.commitTransaction()
+    override fun insert(model: ModelGroup) {
+        realmN = Realm.getDefaultInstance()
+        realmN.executeTransactionAsync {
+            it.copyToRealm(model)
+        }
+        realmN.close()
     }
 
-    override fun insertModels(listModels: List<ModelGroup>, realm: Realm) {
-        realm.beginTransaction()
-        realm.copyToRealm(listModels)
-        realm.commitTransaction()
+    override fun insertModels(listModels: List<ModelGroup>) {
+        realmN = Realm.getDefaultInstance()
+        realmN.executeTransactionAsync {
+            it.copyToRealm(listModels)
+        }
+        realmN.close()
     }
 }

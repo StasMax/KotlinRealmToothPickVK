@@ -1,21 +1,20 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
 import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
-import io.realm.annotations.RealmClass
 
-
-open class ModelGroup (var name:String? = null, var subscribers:String? = null, var avatar:String? = null, var isFavorite:Boolean = false) :
+open class ModelGroup(
+    var name: String? = null,
+    var subscribers: String? = null,
+    var avatar: String? = null,
+    var isFavorite: Boolean = false
+) :
     RealmObject() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-
         other as ModelGroup
-
         if (name != other.name) return false
-
         return true
     }
 

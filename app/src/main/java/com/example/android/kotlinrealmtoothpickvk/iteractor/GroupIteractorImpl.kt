@@ -4,27 +4,25 @@ import com.example.android.kotlinrealmtoothpickvk.data.repository.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.realm.Realm
+import javax.inject.Inject
 
-class GroupIteractorImpl() : IGroupIteractor {
+class GroupIteractorImpl @Inject constructor (var localRepository: ILocalDbRepository, var vkRepository: IVkRepository) : IGroupIteractor {
 
-    private var localRepository: ILocalDbRepository = LocalDbRepositoryImpl()
-    private var vkRepository: IVkRepository = VkRepositoryImpl()
 
-    override fun putModelsInDb(models: List<ModelGroup>, realm: Realm): Completable {
-        return localRepository.insertAll(models, realm)
+    override fun putModelsInDb(models: List<ModelGroup>): Completable {
+        return localRepository.insertAll(models)
     }
 
-    override fun updeteModelInDb(model: ModelGroup, realm: Realm): Completable {
-        return localRepository.update(model, realm)
+    override fun updeteModelInDb(model: ModelGroup): Completable {
+        return localRepository.update(model)
     }
 
-    override fun getFavoriteGroups(realm: Realm): Flowable<List<ModelGroup>> {
-        return localRepository.getFavoriteFromLocalDb(realm)
+    override fun getFavoriteGroups(): Flowable<List<ModelGroup>> {
+        return localRepository.getFavoriteFromLocalDb()
     }
 
-    override fun getAllGroups(realm: Realm): Flowable<List<ModelGroup>> {
-        return localRepository.getAllFromLocalDb(realm)
+    override fun getAllGroups(): Flowable<List<ModelGroup>> {
+        return localRepository.getAllFromLocalDb()
     }
 
     override fun getAllListGroupsVk(): Single<List<ModelGroup>> {

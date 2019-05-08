@@ -2,14 +2,13 @@ package com.example.android.kotlinrealmtoothpickvk.data.repository
 
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.realm.Realm
 
 interface ILocalDbRepository {
-    fun insertAll(vkModels: List<ModelGroup>, realm: Realm): Completable
+    fun insertAll(vkModels: List<ModelGroup>): Completable
 
-    fun update(model: ModelGroup, realm: Realm): Completable
+    fun update(model: ModelGroup): Completable
 
-    fun getAllFromLocalDb(realm: Realm): Flowable<List<ModelGroup>>
+    fun getAllFromLocalDb(): Flowable<List<ModelGroup>>
 
-    fun getFavoriteFromLocalDb(realm: Realm): Flowable<List<ModelGroup>>
+    fun getFavoriteFromLocalDb(): Flowable<List<ModelGroup>>
 }

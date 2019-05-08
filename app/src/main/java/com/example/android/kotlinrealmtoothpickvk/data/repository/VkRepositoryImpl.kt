@@ -1,11 +1,11 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
-import android.util.Log
 import com.google.gson.JsonParser
 import com.vk.sdk.api.*
 import io.reactivex.Single
+import javax.inject.Inject
 
-class VkRepositoryImpl : IVkRepository {
+class VkRepositoryImpl @Inject constructor(): IVkRepository {
     private var request: VKRequest =
         VKApi.groups().get(VKParameters.from(VKApiConst.FIELDS, "members_count", VKApiConst.EXTENDED, 1))
     private var listGroups = arrayListOf<ModelGroup>()
@@ -36,7 +36,6 @@ class VkRepositoryImpl : IVkRepository {
                     }
                     subscriber.onSuccess(listGroups)
                 }
-
             })
         }
     }
