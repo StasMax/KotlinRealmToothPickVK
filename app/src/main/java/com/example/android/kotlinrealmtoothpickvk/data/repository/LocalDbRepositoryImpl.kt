@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import javax.inject.Inject

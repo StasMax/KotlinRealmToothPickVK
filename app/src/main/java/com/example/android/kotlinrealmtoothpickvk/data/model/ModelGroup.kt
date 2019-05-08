@@ -1,4 +1,4 @@
-package com.example.android.kotlinrealmtoothpickvk.data.repository
+package com.example.android.kotlinrealmtoothpickvk.data.model
 
 import io.realm.RealmObject
 

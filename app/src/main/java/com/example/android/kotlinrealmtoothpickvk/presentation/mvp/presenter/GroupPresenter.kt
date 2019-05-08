@@ -3,7 +3,7 @@ package com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter
 import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.example.android.kotlinrealmtoothpickvk.R
-import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.example.android.kotlinrealmtoothpickvk.iteractor.IGroupIteractor
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupView
 import com.vk.sdk.VKAccessToken

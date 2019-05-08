@@ -1,7 +1,7 @@
 package com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter
 
 import com.arellomobile.mvp.InjectViewState
-import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.example.android.kotlinrealmtoothpickvk.iteractor.IGroupIteractor
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.FavoriteView
 import io.reactivex.android.schedulers.AndroidSchedulers

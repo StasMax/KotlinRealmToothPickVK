@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.iteractor
 
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.example.android.kotlinrealmtoothpickvk.data.repository.*
 import io.reactivex.Completable
 import io.reactivex.Flowable

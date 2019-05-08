@@ -3,7 +3,7 @@ package com.example.android.kotlinrealmtoothpickvk.presentation.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.example.android.kotlinrealmtoothpickvk.R
-import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.recycler.view.*

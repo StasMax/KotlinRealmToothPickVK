@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.google.gson.JsonParser
 import com.vk.sdk.api.*
 import io.reactivex.Single
@@ -32,7 +33,14 @@ class VkRepositoryImpl @Inject constructor(): IVkRepository {
                         if (je.asJsonObject.get("photo_100") != null) {
                             vkAvatar = je.asJsonObject.get("photo_100").asString
                         }
-                        listGroups.add(ModelGroup(vkName, vkSubscription, vkAvatar, false))
+                        listGroups.add(
+                            ModelGroup(
+                                vkName,
+                                vkSubscription,
+                                vkAvatar,
+                                false
+                            )
+                        )
                     }
                     subscriber.onSuccess(listGroups)
                 }

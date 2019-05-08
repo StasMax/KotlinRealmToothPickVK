@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
 import com.example.android.kotlinrealmtoothpickvk.R
-import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import java.util.ArrayList
 
 class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

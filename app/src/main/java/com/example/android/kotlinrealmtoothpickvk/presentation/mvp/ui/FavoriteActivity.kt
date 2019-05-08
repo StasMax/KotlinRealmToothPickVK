@@ -7,7 +7,7 @@ import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.android.kotlinrealmtoothpickvk.R
-import com.example.android.kotlinrealmtoothpickvk.data.repository.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.GroupAdapterRv
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.Listener

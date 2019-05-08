@@ -1,5 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
+import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import io.reactivex.Flowable
 import io.realm.Realm
 import javax.inject.Inject
@@ -10,14 +11,16 @@ class RealmDbImpl @Inject constructor() : IRealmDb {
 
     override fun getAll(): Flowable<List<ModelGroup>> {
         realmN = Realm.getDefaultInstance()
-        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(ModelGroup::class.java).findAllAsync())
+        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(
+            ModelGroup::class.java).findAllAsync())
         realmN.close()
         return Flowable.just(models)
     }
 
     override fun getAllList(): List<ModelGroup> {
         realmN = Realm.getDefaultInstance()
-        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(ModelGroup::class.java).findAllAsync())
+        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(
+            ModelGroup::class.java).findAllAsync())
         realmN.close()
         return models
     }
