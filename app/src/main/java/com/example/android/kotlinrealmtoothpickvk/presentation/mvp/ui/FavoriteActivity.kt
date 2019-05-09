@@ -1,9 +1,6 @@
 package com.example.android.kotlinrealmtoothpickvk.presentation.mvp.ui
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.OrientationHelper
-import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.android.kotlinrealmtoothpickvk.R
@@ -11,6 +8,8 @@ import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.GroupAdapterRv
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.Listener
+import com.example.android.kotlinrealmtoothpickvk.presentation.makeUnvisible
+import com.example.android.kotlinrealmtoothpickvk.presentation.makeVisible
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter.FavoritePresenter
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.FavoriteView
 import kotlinx.android.synthetic.main.activity_favorite.*
@@ -23,9 +22,7 @@ class FavoriteActivity : FavoriteView, BaseActivity() {
     lateinit var favoritePresenter: FavoritePresenter
 
     @ProvidePresenter
-    fun providePresenter(): FavoritePresenter {
-        return favoritePresenter
-    }
+    fun providePresenter() = favoritePresenter
 
     lateinit var groupAdapterRv: GroupAdapterRv
 
@@ -38,8 +35,6 @@ class FavoriteActivity : FavoriteView, BaseActivity() {
         favoritePresenter.onInitFavoriteGroups()
         groupAdapterRv = GroupAdapterRv()
         favoriteRecyclerView.adapter = groupAdapterRv
-        favoriteRecyclerView.layoutManager =
-            LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
         favoriteListener(groupAdapterRv)
     }
 
@@ -52,11 +47,11 @@ class FavoriteActivity : FavoriteView, BaseActivity() {
     }
 
     override fun setupEmptyList() {
-        txtGroupsNoItemFavorite.visibility = View.VISIBLE
+        txtGroupsNoItemFavorite.makeVisible()
     }
 
     override fun setupGroupsList(groupModelFavoriteList: List<ModelGroup>) {
-        txtGroupsNoItemFavorite.visibility = View.GONE
+        txtGroupsNoItemFavorite.makeUnvisible()
         groupAdapterRv.setupFavoriteGroups(groupModelFavoriteList)
     }
 

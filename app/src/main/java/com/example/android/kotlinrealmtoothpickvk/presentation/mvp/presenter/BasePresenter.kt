@@ -9,9 +9,7 @@ open class BasePresenter<View : MvpView> : MvpPresenter<View>() {
 
     var compositeDisposable = CompositeDisposable()
 
-    fun disposeBag(disposable:Disposable){
-        compositeDisposable.add(disposable)
-    }
+    fun disposeBag(disposable:Disposable) = compositeDisposable.add(disposable)
 
     override fun onDestroy() {
         super.onDestroy()

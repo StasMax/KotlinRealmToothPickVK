@@ -3,9 +3,6 @@ package com.example.android.kotlinrealmtoothpickvk.presentation.mvp.ui
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.OrientationHelper
-import android.view.View
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.android.kotlinrealmtoothpickvk.R
@@ -14,6 +11,8 @@ import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.GroupAdapterRv
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.Listener
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.onTextChange
+import com.example.android.kotlinrealmtoothpickvk.presentation.makeUnvisible
+import com.example.android.kotlinrealmtoothpickvk.presentation.makeVisible
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter.GroupPresenter
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupView
 import com.vk.sdk.VKScope
@@ -24,7 +23,7 @@ import toothpick.Toothpick
 import javax.inject.Inject
 
 class MainActivity : GroupView, BaseActivity() {
-    var vkLoad: Boolean = true
+    var vkLoad = true
     lateinit var adapter: GroupAdapterRv
 
     @Inject
@@ -32,9 +31,8 @@ class MainActivity : GroupView, BaseActivity() {
     lateinit var groupPresenter: GroupPresenter
 
     @ProvidePresenter
-    fun providePresenter(): GroupPresenter {
-        return groupPresenter
-    }
+    fun providePresenter() = groupPresenter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedInstanceState?.let { vkLoad = savedInstanceState.getBoolean("vkLoad") }
@@ -55,8 +53,6 @@ class MainActivity : GroupView, BaseActivity() {
     private fun setupRecyclerView() {
         adapter = GroupAdapterRv()
         recyclerGroups.adapter = adapter
-        recyclerGroups.layoutManager =
-            LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
         recyclerGroups.setHasFixedSize(true)
         favoriteListener(adapter)
     }
@@ -78,13 +74,13 @@ class MainActivity : GroupView, BaseActivity() {
     }
 
     override fun startLoading() {
-        txtGroupsNoItem.visibility = View.GONE
-        recyclerGroups.visibility = View.GONE
-        cpvGroups.visibility = View.VISIBLE
+        txtGroupsNoItem.makeUnvisible()
+        recyclerGroups.makeUnvisible()
+        cpvGroups.makeVisible()
     }
 
     override fun endLoading() {
-        cpvGroups.visibility = View.GONE
+        cpvGroups.makeUnvisible()
     }
 
     override fun showError(textResource: Int) {
@@ -92,13 +88,13 @@ class MainActivity : GroupView, BaseActivity() {
     }
 
     override fun setupEmptyList() {
-        txtGroupsNoItem.visibility = View.VISIBLE
-        recyclerGroups.visibility = View.GONE
+        txtGroupsNoItem.makeVisible()
+        recyclerGroups.makeUnvisible()
     }
 
     override fun setupGroupsList(groupsList: List<ModelGroup>) {
-        txtGroupsNoItem.visibility = View.GONE
-        recyclerGroups.visibility = View.VISIBLE
+        txtGroupsNoItem.makeUnvisible()
+        recyclerGroups.makeVisible()
         adapter.setupGroups(groupModelList = groupsList)
     }
 
@@ -122,6 +118,6 @@ class MainActivity : GroupView, BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
-        outState!!.putBoolean("vkLoad", vkLoad)
+        outState?.let { outState.putBoolean("vkLoad", vkLoad) }
     }
 }

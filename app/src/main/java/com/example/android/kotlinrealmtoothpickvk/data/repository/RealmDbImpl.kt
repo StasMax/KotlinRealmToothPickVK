@@ -5,7 +5,8 @@ import io.reactivex.Flowable
 import io.realm.Realm
 import javax.inject.Inject
 
-class RealmDbImpl @Inject constructor() : IRealmDb {
+class RealmDbImpl
+@Inject constructor() : IRealmDb {
 
     lateinit var realmN: Realm
 

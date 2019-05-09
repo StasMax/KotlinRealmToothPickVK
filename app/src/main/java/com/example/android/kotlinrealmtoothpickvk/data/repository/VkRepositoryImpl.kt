@@ -6,8 +6,10 @@ import com.vk.sdk.api.*
 import io.reactivex.Single
 import javax.inject.Inject
 
-class VkRepositoryImpl @Inject constructor(): IVkRepository {
-    private var request: VKRequest =
+class VkRepositoryImpl
+@Inject constructor() : IVkRepository {
+
+    private var request =
         VKApi.groups().get(VKParameters.from(VKApiConst.FIELDS, "members_count", VKApiConst.EXTENDED, 1))
     private var listGroups = arrayListOf<ModelGroup>()
     private var vkName: String? = null
