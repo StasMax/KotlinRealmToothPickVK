@@ -6,16 +6,16 @@ import com.example.android.kotlinrealmtoothpickvk.R
 import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.recycler.view.*
+import kotlinx.android.synthetic.main.item_view_recycler.view.*
 
 class ViewHolderGroup(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    var civAvatar: CircleImageView = itemView.findViewById(R.id.groups_siv_avatar)
+    var civAvatar: CircleImageView = itemView.findViewById(R.id.groupsSivAvatar)
 
     fun bind(groupModel: ModelGroup) {
-        itemView.group_txt_name.text = groupModel.name
-        itemView.group_txt_subscribers.text = groupModel.subscribers
-        itemView.isFavorite_checkBox.isChecked = groupModel.isFavorite
+        itemView.groupTxtName.text = groupModel.name
+        itemView.groupTxtSubscribers.text = groupModel.subscribers
+        itemView.isFavoriteCheckBox.isChecked = groupModel.isFavorite
         groupModel.avatar?.let { Picasso.with(itemView.context).load(it).into(civAvatar) }
     }
 }

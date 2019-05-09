@@ -54,21 +54,21 @@ class MainActivity : GroupView, BaseActivity() {
 
     private fun setupRecyclerView() {
         adapter = GroupAdapterRv()
-        recycler_groups.adapter = adapter
-        recycler_groups.layoutManager =
+        recyclerGroups.adapter = adapter
+        recyclerGroups.layoutManager =
             LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
-        recycler_groups.setHasFixedSize(true)
+        recyclerGroups.setHasFixedSize(true)
         favoriteListener(adapter)
     }
 
     private fun txtListener() {
-        txt_search.onTextChange { text, _, _, _ ->
+        txtSearch.onTextChange { text, _, _, _ ->
             adapter.filter(text.toString())
         }
     }
 
     private fun clickButton() {
-        float_button.setOnClickListener {
+        floatButton.setOnClickListener {
             startActivity(Intent(this@MainActivity, FavoriteActivity::class.java))
         }
     }
@@ -78,27 +78,27 @@ class MainActivity : GroupView, BaseActivity() {
     }
 
     override fun startLoading() {
-        txt_groups_no_item.visibility = View.GONE
-        recycler_groups.visibility = View.GONE
-        cpv_groups.visibility = View.VISIBLE
+        txtGroupsNoItem.visibility = View.GONE
+        recyclerGroups.visibility = View.GONE
+        cpvGroups.visibility = View.VISIBLE
     }
 
     override fun endLoading() {
-        cpv_groups.visibility = View.GONE
+        cpvGroups.visibility = View.GONE
     }
 
     override fun showError(textResource: Int) {
-        txt_groups_no_item.text = getString(textResource)
+        txtGroupsNoItem.text = getString(textResource)
     }
 
     override fun setupEmptyList() {
-        txt_groups_no_item.visibility = View.VISIBLE
-        recycler_groups.visibility = View.GONE
+        txtGroupsNoItem.visibility = View.VISIBLE
+        recyclerGroups.visibility = View.GONE
     }
 
     override fun setupGroupsList(groupsList: List<ModelGroup>) {
-        txt_groups_no_item.visibility = View.GONE
-        recycler_groups.visibility = View.VISIBLE
+        txtGroupsNoItem.visibility = View.GONE
+        recyclerGroups.visibility = View.VISIBLE
         adapter.setupGroups(groupModelList = groupsList)
     }
 

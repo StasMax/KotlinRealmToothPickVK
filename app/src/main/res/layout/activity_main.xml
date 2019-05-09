@@ -8,7 +8,7 @@
               tools:context=".presentation.mvp.ui.MainActivity">
 
     <EditText
-            android:id="@+id/txt_search"
+            android:id="@+id/txtSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/group_search_hint"
@@ -20,12 +20,12 @@
             android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_groups"
+                android:id="@+id/recyclerGroups"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <TextView
-                android:id="@+id/txt_groups_no_item"
+                android:id="@+id/txtGroupsNoItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -33,7 +33,7 @@
                 android:visibility="gone"/>
 
         <com.github.rahatarmanahmed.cpv.CircularProgressView
-                android:id="@+id/cpv_groups"
+                android:id="@+id/cpvGroups"
                 android:layout_width="@dimen/circular_progress_view_size"
                 android:layout_height="@dimen/circular_progress_view_size"
                 android:layout_gravity="center"
@@ -43,7 +43,7 @@
                 app:cpv_indeterminate="true"/>
 
         <android.support.design.widget.FloatingActionButton
-                android:id="@+id/float_button"
+                android:id="@+id/floatButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
@@ -52,6 +52,5 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:src="@drawable/fb_star"
                 tools:ignore="UnusedAttribute"/>
-
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

@@ -37,8 +37,8 @@ class FavoriteActivity : FavoriteView, BaseActivity() {
         setContentView(R.layout.activity_favorite)
         favoritePresenter.onInitFavoriteGroups()
         groupAdapterRv = GroupAdapterRv()
-        favorite_recycler_view.adapter = groupAdapterRv
-        favorite_recycler_view.layoutManager =
+        favoriteRecyclerView.adapter = groupAdapterRv
+        favoriteRecyclerView.layoutManager =
             LinearLayoutManager(applicationContext, OrientationHelper.VERTICAL, false)
         favoriteListener(groupAdapterRv)
     }
@@ -52,11 +52,11 @@ class FavoriteActivity : FavoriteView, BaseActivity() {
     }
 
     override fun setupEmptyList() {
-        txt_groups_no_item_favorite.visibility = View.VISIBLE
+        txtGroupsNoItemFavorite.visibility = View.VISIBLE
     }
 
     override fun setupGroupsList(groupModelFavoriteList: List<ModelGroup>) {
-        txt_groups_no_item_favorite.visibility = View.GONE
+        txtGroupsNoItemFavorite.visibility = View.GONE
         groupAdapterRv.setupFavoriteGroups(groupModelFavoriteList)
     }
 
