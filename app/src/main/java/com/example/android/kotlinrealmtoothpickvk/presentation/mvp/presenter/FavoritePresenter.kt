@@ -15,7 +15,8 @@ class FavoritePresenter
 ) : BasePresenter<FavoriteView>() {
 
     fun onInitFavoriteGroups() {
-        interactor.getFavoriteGroups()
+        interactor
+            .getFavoriteGroups()
             .asyncFlowable()
             .subscribe { onInitGroupsRecycle(it) }
             .let { disposeBag(it) }
@@ -31,7 +32,8 @@ class FavoritePresenter
 
     fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
         groupModel.isFavorite = isChecked
-        interactor.updeteModelInDb(groupModel)
+        interactor
+            .updeteModelInDb(groupModel)
             .asyncCompletable()
             .subscribe()
             .let { disposeBag(it) }

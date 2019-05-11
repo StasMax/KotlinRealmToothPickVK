@@ -34,7 +34,8 @@ class GroupPresenter
     }
 
     fun onInitGroupsVk() {
-        interactor.getAllListGroupsVk()
+        interactor
+            .getAllListGroupsVk()
             .asyncSingle()
             .doOnSubscribe { viewState.startLoading() }
             .flatMapCompletable { interactor.putModelsInDb(it) }
@@ -43,7 +44,8 @@ class GroupPresenter
     }
 
     fun onInitGroupsDb() {
-        interactor.getAllGroups()
+        interactor
+            .getAllGroups()
             .asyncFlowable()
             .subscribe {
                 onInitGroupsRecycle(it)
@@ -63,7 +65,8 @@ class GroupPresenter
 
     fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
         groupModel.isFavorite = isChecked
-        interactor.updeteModelInDb(groupModel)
+        interactor
+            .updeteModelInDb(groupModel)
             .asyncCompletable()
             .subscribe()
             .let { disposeBag(it) }
