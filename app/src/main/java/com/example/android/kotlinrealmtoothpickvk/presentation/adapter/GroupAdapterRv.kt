@@ -38,14 +38,14 @@ class GroupAdapterRv : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolderGroup {
         val layoutInflater = LayoutInflater.from(viewGroup.context)
-        val itemView = layoutInflater.inflate(R.layout.recycler, viewGroup, false)
+        val itemView = layoutInflater.inflate(R.layout.item_view_recycler, viewGroup, false)
         return ViewHolderGroup(itemView = itemView)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, i: Int) {
         if (viewHolder is ViewHolderGroup) {
             viewHolder.bind(groupModel = groupsModelList[i])
-            val checkBox: CheckBox = viewHolder.itemView.findViewById(R.id.isFavorite_checkBox)
+            val checkBox: CheckBox = viewHolder.itemView.findViewById(R.id.isFavoriteCheckBox)
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 listener.onClick(groupsModelList[i], isChecked)
             }

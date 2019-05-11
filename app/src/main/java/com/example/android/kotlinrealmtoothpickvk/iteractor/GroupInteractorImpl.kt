@@ -7,8 +7,11 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class GroupIteractorImpl @Inject constructor (var localRepository: ILocalDbRepository, var vkRepository: IVkRepository) : IGroupIteractor {
-
+class GroupInteractorImpl
+@Inject constructor (
+    private val localRepository: ILocalDbRepository,
+    private val vkRepository: IVkRepository
+) : IGroupInteractor {
 
     override fun putModelsInDb(models: List<ModelGroup>): Completable {
         return localRepository.insertAll(models)

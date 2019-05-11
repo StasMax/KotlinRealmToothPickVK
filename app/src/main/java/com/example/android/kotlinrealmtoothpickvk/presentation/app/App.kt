@@ -1,10 +1,12 @@
 package com.example.android.kotlinrealmtoothpickvk.presentation.app
 
 import android.app.Application
+import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.github.stephanenicolas.toothpick.smoothie.BuildConfig
 import com.vk.sdk.VKSdk
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
 import toothpick.registries.FactoryRegistryLocator
@@ -15,22 +17,31 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         VKSdk.initialize(applicationContext)
+        initRealm()
+        initToothpick()
+    }
 
+    private fun initRealm() {
         Realm.init(this)
         val c = RealmConfiguration.Builder()
         c.name("modelGroup")
         c.deleteRealmIfMigrationNeeded()
         Realm.setDefaultConfiguration(c.build())
+    }
 
-        Toothpick.setConfiguration(
-            if (BuildConfig.DEBUG) {
-                Configuration.forDevelopment()
-            } else {
-                Configuration.forProduction().disableReflection()
-            }
-        )
-        MemberInjectorRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.MemberInjectorRegistry())
-        FactoryRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.FactoryRegistry())
+    private fun initToothpick() {
+        if (BuildConfig.DEBUG) {
+            Toothpick.setConfiguration(Configuration.forDevelopment().preventMultipleRootScopes())
+        } else {
+            Toothpick.setConfiguration(Configuration.forProduction().disableReflection())
+            MemberInjectorRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.MemberInjectorRegistry())
+            FactoryRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.FactoryRegistry())
+        }
+        scope = Toothpick.openScope("mainScope")
+        scope.installModules(GroupModule())
+    }
+    companion object{
+        lateinit var scope: Scope
     }
 }
 

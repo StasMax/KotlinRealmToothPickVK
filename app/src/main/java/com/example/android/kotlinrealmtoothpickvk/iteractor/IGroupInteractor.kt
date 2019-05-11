@@ -5,7 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
-interface IGroupIteractor {
+interface IGroupInteractor {
     fun getAllGroups(): Flowable<List<ModelGroup>>
 
     fun getFavoriteGroups(): Flowable<List<ModelGroup>>

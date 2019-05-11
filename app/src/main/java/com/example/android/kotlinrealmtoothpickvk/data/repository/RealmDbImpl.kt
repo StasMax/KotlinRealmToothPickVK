@@ -1,69 +1,67 @@
 package com.example.android.kotlinrealmtoothpickvk.data.repository
 
 import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
+import com.example.android.kotlinrealmtoothpickvk.data.repository.decorator.EmptyQueryDecorator
+import com.example.android.kotlinrealmtoothpickvk.data.repository.decorator.QueryDecorator
 import io.reactivex.Flowable
 import io.realm.Realm
+import io.realm.RealmObject
 import javax.inject.Inject
 
-class RealmDbImpl @Inject constructor() : IRealmDb {
+class RealmDbImpl
+@Inject constructor() : IRealmDb {
 
-    lateinit var realmN: Realm
+    override fun <T : RealmObject> saveItem(item: T) = saveItems(listOf(item))
 
-    override fun getAll(): Flowable<List<ModelGroup>> {
-        realmN = Realm.getDefaultInstance()
-        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(
-            ModelGroup::class.java).findAllAsync())
-        realmN.close()
-        return Flowable.just(models)
-    }
-
-    override fun getAllList(): List<ModelGroup> {
-        realmN = Realm.getDefaultInstance()
-        val models: List<ModelGroup> = realmN.copyFromRealm(realmN.where(
-            ModelGroup::class.java).findAllAsync())
-        realmN.close()
-        return models
-    }
-
-    override fun getFavorite(): Flowable<List<ModelGroup>> {
-        realmN = Realm.getDefaultInstance()
-        val models: List<ModelGroup> =
-            realmN.copyFromRealm(realmN.where(ModelGroup::class.java).equalTo("isFavorite", true).findAllAsync())
-        realmN.close()
-        return Flowable.just(models)
-    }
-
-    override fun delete(model: ModelGroup) {
-        realmN = Realm.getDefaultInstance()
-        realmN.executeTransactionAsync {
-            val result = realmN.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
-            result!!.deleteFromRealm()
+    override fun <T : RealmObject> saveItems(list: List<T>?) {
+        if (list.isNullOrEmpty()) return
+        val realm = Realm.getDefaultInstance()
+        realm.use {
+            it.executeTransaction { transaction ->
+                transaction.copyToRealmOrUpdate(list)
+            }
         }
-        realmN.close()
+        realm.close()
     }
 
-    override fun updateFavorite(model: ModelGroup) {
-        realmN = Realm.getDefaultInstance()
-        realmN.executeTransactionAsync {
-            val result = it.where(ModelGroup::class.java).equalTo("name", model.name).findFirst()
+    override fun updateFavorite(decorator: QueryDecorator, model: ModelGroup) {
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            val result = (decorator.decorateQuery(it.where(ModelGroup::class.java)).findFirst())
             result!!.isFavorite = model.isFavorite
         }
-        realmN.close()
+        realm.close()
     }
 
-    override fun insert(model: ModelGroup) {
-        realmN = Realm.getDefaultInstance()
-        realmN.executeTransactionAsync {
-            it.copyToRealm(model)
+    override fun <E : RealmObject> delItem(clazz: Class<E>) = delItem(EmptyQueryDecorator(), clazz)
+
+    override fun <E : RealmObject> delItem(decorator: QueryDecorator, clazz: Class<E>) {
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            (decorator.decorateQuery(realm.where(clazz)).findFirst()?.deleteFromRealm())
         }
-        realmN.close()
+        realm.close()
     }
 
-    override fun insertModels(listModels: List<ModelGroup>) {
-        realmN = Realm.getDefaultInstance()
-        realmN.executeTransactionAsync {
-            it.copyToRealm(listModels)
+    override fun <E : RealmObject> getItem(decorator: QueryDecorator, clazz: Class<E>): E? {
+        val realm = Realm.getDefaultInstance()
+        return realm.use {
+            val items = decorator.decorateQuery(realm.where(clazz)).findAll()
+            if (items.size == 1) realm.copyFromRealm(items)[0]
+            else null
         }
-        realmN.close()
+    }
+
+    override fun <E : RealmObject> getItems(clazz: Class<E>) = getItems(EmptyQueryDecorator(), clazz)
+
+    override fun <E : RealmObject> getItems(decorator: QueryDecorator, clazz: Class<E>) =
+        Flowable.just(getItemList(decorator, clazz))
+
+    override fun <E : RealmObject> getItemList(decorator: QueryDecorator, clazz: Class<E>): List<E> {
+        val realm = Realm.getDefaultInstance()
+        return realm.use {
+            val realmList = decorator.decorateQuery(realm.where(clazz)).findAll()
+            realm.copyFromRealm(realmList)
+        }
     }
 }

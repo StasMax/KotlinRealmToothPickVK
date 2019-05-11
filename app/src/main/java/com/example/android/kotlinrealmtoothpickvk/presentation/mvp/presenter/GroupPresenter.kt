@@ -4,18 +4,22 @@ import android.content.Intent
 import com.arellomobile.mvp.InjectViewState
 import com.example.android.kotlinrealmtoothpickvk.R
 import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
-import com.example.android.kotlinrealmtoothpickvk.iteractor.IGroupIteractor
+import com.example.android.kotlinrealmtoothpickvk.iteractor.IGroupInteractor
+import com.example.android.kotlinrealmtoothpickvk.presentation.asyncCompletable
+import com.example.android.kotlinrealmtoothpickvk.presentation.asyncFlowable
+import com.example.android.kotlinrealmtoothpickvk.presentation.asyncSingle
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupView
 import com.vk.sdk.VKAccessToken
 import com.vk.sdk.VKCallback
 import com.vk.sdk.VKSdk
 import com.vk.sdk.api.VKError
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @InjectViewState
-class GroupPresenter @Inject constructor(var iteractor: IGroupIteractor) : BasePresenter<GroupView>() {
+class GroupPresenter
+@Inject constructor(
+    private val interactor: IGroupInteractor
+) : BasePresenter<GroupView>() {
 
     fun loginVk(requestCode: Int, resultCode: Int, data: Intent?) {
         VKSdk.onActivityResult(requestCode, resultCode, data, object : VKCallback<VKAccessToken> {
@@ -30,22 +34,24 @@ class GroupPresenter @Inject constructor(var iteractor: IGroupIteractor) : BaseP
     }
 
     fun onInitGroupsVk() {
-        disposeBag(iteractor.getAllListGroupsVk()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        interactor
+            .getAllListGroupsVk()
+            .asyncSingle()
             .doOnSubscribe { viewState.startLoading() }
-            .flatMapCompletable { iteractor.putModelsInDb(it) }
-            .subscribe())
+            .flatMapCompletable { interactor.putModelsInDb(it) }
+            .subscribe()
+            .let { disposeBag(it) }
     }
 
     fun onInitGroupsDb() {
-        disposeBag(iteractor.getAllGroups()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        interactor
+            .getAllGroups()
+            .asyncFlowable()
             .subscribe {
                 onInitGroupsRecycle(it)
                 viewState.endLoading()
-            })
+            }
+            .let { disposeBag(it) }
     }
 
     private fun onInitGroupsRecycle(groupModelList: List<ModelGroup>) {
@@ -59,11 +65,10 @@ class GroupPresenter @Inject constructor(var iteractor: IGroupIteractor) : BaseP
 
     fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
         groupModel.isFavorite = isChecked
-        disposeBag(
-            iteractor.updeteModelInDb(groupModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
-        )
+        interactor
+            .updeteModelInDb(groupModel)
+            .asyncCompletable()
+            .subscribe()
+            .let { disposeBag(it) }
     }
 }
