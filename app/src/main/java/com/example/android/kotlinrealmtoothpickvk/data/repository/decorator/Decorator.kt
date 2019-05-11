@@ -17,4 +17,3 @@ fun getQueryDecoratorByName(item: ModelGroup) =
             return query.equalTo("name", item.name)
         }
     }
-

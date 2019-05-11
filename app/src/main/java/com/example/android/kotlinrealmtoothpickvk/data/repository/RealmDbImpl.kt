@@ -26,7 +26,7 @@ class RealmDbImpl
 
     override fun updateFavorite(decorator: QueryDecorator, model: ModelGroup) {
         val realm = Realm.getDefaultInstance()
-        realm.executeTransactionAsync {
+        realm.executeTransaction {
             val result = (decorator.decorateQuery(it.where(ModelGroup::class.java)).findFirst())
             result!!.isFavorite = model.isFavorite
         }

@@ -1,10 +1,12 @@
 package com.example.android.kotlinrealmtoothpickvk.presentation.app
 
 import android.app.Application
+import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.github.stephanenicolas.toothpick.smoothie.BuildConfig
 import com.vk.sdk.VKSdk
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.configuration.Configuration
 import toothpick.registries.FactoryRegistryLocator
@@ -35,6 +37,11 @@ class App : Application() {
             MemberInjectorRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.MemberInjectorRegistry())
             FactoryRegistryLocator.setRootRegistry(com.example.android.kotlinrealmtoothpickvk.FactoryRegistry())
         }
+        scope = Toothpick.openScope("mainScope")
+        scope.installModules(GroupModule())
+    }
+    companion object{
+        lateinit var scope: Scope
     }
 }
 

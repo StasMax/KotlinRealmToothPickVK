@@ -7,10 +7,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.android.kotlinrealmtoothpickvk.R
 import com.example.android.kotlinrealmtoothpickvk.data.model.ModelGroup
-import com.example.android.kotlinrealmtoothpickvk.di.module.GroupModule
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.GroupAdapterRv
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.Listener
 import com.example.android.kotlinrealmtoothpickvk.presentation.adapter.onTextChange
+import com.example.android.kotlinrealmtoothpickvk.presentation.app.App.Companion.scope
 import com.example.android.kotlinrealmtoothpickvk.presentation.makeUnvisible
 import com.example.android.kotlinrealmtoothpickvk.presentation.makeVisible
 import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.presenter.GroupPresenter
@@ -18,7 +18,6 @@ import com.example.android.kotlinrealmtoothpickvk.presentation.mvp.view.GroupVie
 import com.vk.sdk.VKScope
 import com.vk.sdk.VKSdk
 import kotlinx.android.synthetic.main.activity_main.*
-import toothpick.Scope
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -33,11 +32,8 @@ class MainActivity : GroupView, BaseActivity() {
     @ProvidePresenter
     fun providePresenter() = groupPresenter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         savedInstanceState?.let { vkLoad = savedInstanceState.getBoolean("vkLoad") }
-        val scope: Scope = Toothpick.openScope("mainScope")
-        scope.installModules(GroupModule())
         Toothpick.inject(this, scope)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -101,11 +97,6 @@ class MainActivity : GroupView, BaseActivity() {
     override fun onResume() {
         super.onResume()
         groupPresenter.onInitGroupsDb()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Toothpick.closeScope("mainScope")
     }
 
     private fun favoriteListener(groupAdapterRv: GroupAdapterRv) {
