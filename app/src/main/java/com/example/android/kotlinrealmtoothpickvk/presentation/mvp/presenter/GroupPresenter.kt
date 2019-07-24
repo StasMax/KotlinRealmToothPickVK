@@ -54,21 +54,5 @@ class GroupPresenter
             .let { disposeBag(it) }
     }
 
-    private fun onInitGroupsRecycle(groupModelList: List<ModelGroup>) {
-        if (groupModelList.isEmpty()) {
-            viewState.setupEmptyList()
-            viewState.showError(R.string.no_groups_item)
-        } else {
-            viewState.setupGroupsList(groupsList = groupModelList)
-        }
-    }
 
-    fun onSetFavorite(groupModel: ModelGroup, isChecked: Boolean) {
-        groupModel.isFavorite = isChecked
-        interactor
-            .updeteModelInDb(groupModel)
-            .asyncCompletable()
-            .subscribe()
-            .let { disposeBag(it) }
-    }
 }

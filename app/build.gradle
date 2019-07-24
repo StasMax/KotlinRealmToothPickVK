@@ -10,19 +10,10 @@ apply plugin: 'realm-android'
 
 android {
 
-  /*  javaCompileOptions{
-        annotationProcessorOptions{
-            arguments = [Atoothpick_registry_package_name: 'com.example.android.kotlinrealmtoothpickvk']
-        }
-    }*/
-    compileOptions {
+      compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-
-     /*   annotationProcessorOptions{
-            arguments = [toothpick_registry_package_name: 'com.example.android.kotlinrealmtoothpickvk']
-        }*/
-    }
+        }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.android.kotlinrealmtoothpickvk"
